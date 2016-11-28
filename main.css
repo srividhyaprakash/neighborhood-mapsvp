@@ -1,0 +1,47 @@
+html,body {
+	padding: 0;
+	margin: 0;
+}
+
+#searcher {
+	max-height: 650px;
+	width:30%;
+	background-color: #00000d;
+	padding: 10px;
+	position: absolute;
+	z-index: 10;
+}
+
+#searchbox {
+	width: 75%;
+	min-height: 40px;
+	font-size: 1.2em;
+}
+
+div {
+	font-family: cursive;
+}
+
+div h3 {
+	color:white;
+}
+div h4{
+	color: green;
+}
+div h5 {
+	color: white;
+}
+#map {
+	  	height: 100%;
+	  	width: 100%;
+	  	position: absolute;
+	  }
+	  #tempdisp {
+	  	float: left;
+	  	margin-left: 80%;
+	  	background-color: black;
+	  	color:white;
+	  	font-size: 1.2em;
+	  	z-index: 100;
+	  	position: absolute;
+	  }
