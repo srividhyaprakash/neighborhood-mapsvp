@@ -26,7 +26,9 @@ var places = [{
     cityAddress: "Thiruvananthapuram",
     id: "p1",
     visible: true,
-    boolTest: true
+    boolTest: true,
+    newsAgency:  "espn",   // new property added
+    sortby: "top"
 }, {
     title: "TechnoPark Kerala\n",
     lat: 8.558096,
@@ -35,7 +37,9 @@ var places = [{
     cityAddress: "Thiruvananthapuram",
     id: "p2",
     visible: true,
-    boolTest: true
+    boolTest: true,
+    newsAgency:  "entertainment-weekly",  // new property added
+    sortby: "top"
 }, {
     title: "TechnoPark Backgate Church",
     lat: 8.561622,
@@ -44,7 +48,9 @@ var places = [{
     cityAddress: "Thiruvananthapuram",
     id: "p3",
     visible: true,
-    boolTest: true
+    boolTest: true,
+    newsAgency: "der-tagesspiegel",
+    sortby: "latest"
 }, {
     title: "Tata Elxsi",
     lat: 8.557028,
@@ -53,7 +59,9 @@ var places = [{
     cityAddress: "Thiruvananthapuram",
     id: "p4",
     visible: true,
-    boolTest: true
+    boolTest: true,
+    newsAgency: "daily-mail",
+    sortby: "top"
 }, {
     title: "Oracle Pvt Ltd",
     lat: 8.560942,
@@ -62,9 +70,12 @@ var places = [{
     cityAddress: "Thiruvananthapuram",
     id: "p5",
     visible: true,
-    boolTest: true
+    boolTest: true,
+    newsAgency: "die-zeit",
+    sortby: "latest"
 }];
-
+var j = 0; //variable for looping
+var infowindow;
 // var lists = document.getElementsByClassName("options");
 // console.log(lists);
 var lats = [];
@@ -95,190 +106,73 @@ function initialize() {
         zoom: 16,
         center: myLatLng
     });
-  //   var newsAgencies = [
-  //       { name: "espn" },
-  //       { name:"entertainment-weekly" },
-  //       { name:"der-tagesspiegel" },
-  //       { name: "daily-mail" },
-  //       { name: "die-zeit" }
-  //   ];
-  //   newsAgencies.forEach(function(agency) {
-
-  //       // create url for the agency
-  //       var url = "https://newsapi.org/v1/articles?source=" + agency.name + "&sortBy=top&apiKey=ddeb645e52134e719ed5dcb241db22d3";
-
-  // // run the AJAX request
-  //       $.ajax({
-  //           url: url,
-  //           dataType: 'json',
-  //           success: function(data) {
-  //           // store the data as a property of the agency object
-  //           agency.data = data.articles[0].description;
-  //           }
-  //       });
-    var url0 = "https://newsapi.org/v1/articles?source=espn&sortBy=top&apiKey=ddeb645e52134e719ed5dcb241db22d3";
-    var url1 = "https://newsapi.org/v1/articles?source=entertainment-weekly&sortBy=top&apiKey=ddeb645e52134e719ed5dcb241db22d3";
-    var url2 = "https://newsapi.org/v1/articles?source=der-tagesspiegel&sortBy=latest&apiKey=ddeb645e52134e719ed5dcb241db22d3";
-    var url3 = "https://newsapi.org/v1/articles?source=daily-mail&sortBy=top&apiKey=ddeb645e52134e719ed5dcb241db22d3";
-    var url4 = "https://newsapi.org/v1/articles?source=die-zeit&sortBy=latest&apiKey=ddeb645e52134e719ed5dcb241db22d3";
-    var data0 = "";
-    $.ajax({
-            url: url0,
-            async: false,
-            dataType: 'json',
-            success: function(data) {
-                data0 = data.articles[0].description;
-                console.log(data);
-        }
-    });
-    $.ajax({
-            url: url1,
-            async: false,
-            dataType: 'json',
-            success: function(data) {
-                data1 = data.articles[0].description;
-        }
-    });
-    $.ajax({
-            url: url2,
-            async: false,
-            dataType: 'json',
-            success: function(data) {
-                data2 = data.articles[0].description;
-        }
-    });
-    $.ajax({
-            url: url3,
-            async: false,
-            dataType: 'json',
-            success: function(data) {
-                data3 = data.articles[0].description;
-        }
-    });
-    $.ajax({
-            url: url4,
-            async: false,
-            dataType: 'json',
-            success: function(data) {
-                data4 = data.articles[0].description;
-        }
+     infowindow = new google.maps.InfoWindow({
+        maxWidth: 300
     });
 
-    var cont1 = '<div id="content">' + '<div id="siteNotice">' + '</div>' + '<h1 id="firstHeading" class="firstHeading">TCS</h1>' + '<div id="bodyContent">' + '<p><b>' + data0 + '</p>' + '</div>' + '</div>';
+  places.forEach(function(place) {
 
-    var cont2 = '<div id="content">' + '<div id="siteNotice">' + '</div>' + '<h1 id="firstHeading" class="firstHeading">Technopark Thiruvananthapuram</h1>' + '<div id="bodyContent">' + '<p>' + data1 + '</p>' + '</div>' + '</div>';
+  // create url for the agency
+  var url = "https://newsapi.org/v1/articles?source=" + place.newsAgency +
+    "&sortBy=" + place.sortby + "&apiKey=ddeb645e52134e719ed5dcb241db22d3";
 
-    var cont3 = '<div id="content">' + '<div id="siteNotice">' + '</div>' + '<h1 id="firstHeading" class="firstHeading">Technopark Backgate Church</h1>' + '<div id="bodyContent">' + '<p><b>' + data2 +  '</p>' + '</div>' + '</div>';
+  // run the AJAX request
+  $.ajax({
+    url: url,
+    dataType: 'json',
+    success: function(data) {
+      // store the data as a property of the place object
+      place.news = data.articles[0].description;
 
-    var cont4 = '<div id="content">' + '<div id="siteNotice">' + '</div>' + '<h1 id="firstHeading" class="firstHeading">Tata Elxsi</h1>' + '<div id="bodyContent">' + '<p>' + data3 + '</p>' + '</div>' + '</div>';
-
-    var cont5 = '<div id="content">' + '<div id="siteNotice">' + '</div>' + '<h1 id="firstHeading" class="firstHeading">Oracle Pvt Ltd</h1>' + '<div id="bodyContent">' + '<p>' + data4 + '</p>' + '</div>' + '</div>';
-
-    contentString = [cont1,cont2,cont3,cont4,cont5];
-    for (var j = 0; j < lats.length; j++) {
-        infowindow[j] = new google.maps.InfoWindow({
-            content: contentString[j],
+     // create the content string to use when a list view item or map marker is clicked.
+      place.contentString = '<div id="content"><div id="siteNotice"></div>' +
+        '<h1 id="firstHeading" class="firstHeading">' + place.title +
+        '</h1><div id="bodyContent"><p><b>' + place.news + '</p></div></div>';
+    }
+  });
+          infowindow[j] = new google.maps.InfoWindow({
+            content: place.contentString,
             maxWidth: 300
         });
-    }
-    var a = document.getElementById("p1");
-    var b = document.getElementById("p2");
-    var c = document.getElementById("p3");
-    var d = document.getElementById("p4");
-    var e = document.getElementById("p5");
-    google.maps.event.addDomListener(a, 'click', function(){
-        infowindow[0].open(map,markers[0]);
-        toggleBounce(0);
-    });
-    google.maps.event.addDomListener(b, 'click', function(){
-        infowindow[1].open(map,markers[1]);
-        toggleBounce(1);
-    });
-    google.maps.event.addDomListener(c, 'click', function(){
-        infowindow[2].open(map,markers[2]);
-        toggleBounce(2);
-    });
-    google.maps.event.addDomListener(d, 'click', function(){
-        infowindow[3].open(map,markers[3]);
-        toggleBounce(3);
-    });
-    google.maps.event.addDomListener(e, 'click', function(){
-        infowindow[4].open(map,markers[4]);
-        toggleBounce(4);
-    });
+        j = j + 1;
+});
+
     // The markers as well as the infowindows containing information about these locations is being added.
-    for (var i = 0; i < lats.length; i++) {
-        myLatLng = {
-            lat: lats[i],
-            lng: lngs[i]
-        };
-        markers[i] = new google.maps.Marker({
-            position: myLatLng,
-            map: map,
-            animation: google.maps.Animation.DROP,
-            zoom: 16,
-            title: string[i]
-        });
+    for (var i = 0; i < places.length; i++) {
+
+  myLatLng = {
+    lat: places[i].lat,
+    lng: places[i].lng
+  };
+  var marker = new google.maps.Marker({
+    position: myLatLng,
+    map: map,
+    animation: google.maps.Animation.DROP,
+    zoom: 16,
+    title: string[i]
+  });
+
+  places[i].marker = marker;
+
+  google.maps.event.addListener(marker, 'click', (function(i) {
+    return function() {
+        toggleBounce(places[i].marker);  // add toggleBounce when marker is clicked
+        infowindow.setContent(places[i].contentString),
+        infowindow.open(map, places[i].marker)
     }
-    markers[0].addListener('click', function() {
-        infowindow[0].open(map, markers[0]);
-    });
-    markers[1].addListener('click', function() {
-        infowindow[1].open(map, markers[1]);
-    });
-    markers[2].addListener('click', function() {
-        infowindow[2].open(map, markers[2]);
-    });
-    markers[3].addListener('click', function() {
-        infowindow[3].open(map, markers[3]);
-    });
-    markers[4].addListener('click', function() {
-        infowindow[4].open(map, markers[4]);
-    });
-    markers[0].addListener('click', toggleBounce0);
-    markers[1].addListener('click', toggleBounce1);
-    markers[2].addListener('click', toggleBounce2);
-    markers[3].addListener('click', toggleBounce3);
-    markers[4].addListener('click', toggleBounce4);
+  })(i));
 }
+
 // Toggling feature of the marker when clicked
-function toggleBounce(i) {
-    if (markers[i].getAnimation() !== null) {
-        markers[i].setAnimation(null);
+function toggleBounce(marker) {
+    if (marker.getAnimation() !== null) {
+        marker.setAnimation(null);
     } else {
-        markers[i].setAnimation(google.maps.Animation.BOUNCE);
+        marker.setAnimation(google.maps.Animation.BOUNCE);
     }
 }
 
-function toggleBounce0() {
-    toggleBounce(0);
-}
 
-function toggleBounce1() {
-    toggleBounce(1);
-}
-
-function toggleBounce2() {
-    toggleBounce(2);
-}
-
-function toggleBounce3() {
-    toggleBounce(3);
-}
-
-function toggleBounce4() {
-    toggleBounce(4);
-}
-// var myNumber;
-// function toggleBounce(myNumber) {
-//     toggleBounce(myNumber);
-// }
-// toggleBounce(0);
-// toggleBounce(1);
-// toggleBounce(2);
-// toggleBounce(3);
-// toggleBounce(4);
-// KNOCKOUT.JS --> This follows the MVVM mode and takes care of the query/search in a continous manner and renders the information directly to the page without loading it
 var ViewModel = {
     // places: ko.observableArray(),
     query: ko.observable('')
@@ -288,20 +182,22 @@ var tempArr = [];
 ViewModel.places = ko.dependentObservable(function() {
     var search = this.query().toLowerCase();
     tempArr = [];
+    var marker = [];
     lats = [];
     lngs = [];
     return ko.utils.arrayFilter(places, function(place) {
         if (place.title.toLowerCase().indexOf(search) >= 0) {
             tempArr.push(place.title.toLowerCase());
             lats.push(place.lat);
+            // console.log(place.lat);
             lngs.push(place.lng);
             return place.title.toLowerCase().indexOf(search) >= 0;
         }
 
         console.log(tempArr);
-        for (var j = 0; j < markers.length; j++) {
-            markers[j].setMap(null);
-        }
+        places.forEach(function(place){
+            place.marker.setMap(null);
+        });
         // To display the markers of the required/searched locations alone
         for (var i = 0; i < tempArr.length; i++) {
             for (var j = 0; j < places.length; j++) {
@@ -310,43 +206,31 @@ ViewModel.places = ko.dependentObservable(function() {
                         lat: places[j].lat,
                         lng: places[j].lng
                     };
-                    markers[j] = new google.maps.Marker({
+                    marker[j] = new google.maps.Marker({
                         position: myLatLng,
                         map: map,
                         zoom: 16,
                         animation: google.maps.Animation.DROP,
                         title: string[j]
                     });
-                    markers[j].setMap(map);
+                    marker[j].setMap(map);
                 }
             }
         }
         console.log(markers);
-        markers[0].addListener('click', function() {
-            infowindow[0].open(map, markers[0]);
-        });
-        markers[1].addListener('click', function() {
-            infowindow[1].open(map, markers[1]);
-        });
-        markers[2].addListener('click', function() {
-            infowindow[2].open(map, markers[2]);
-        });
-        markers[3].addListener('click', function() {
-            infowindow[3].open(map, markers[3]);
-        });
-        markers[4].addListener('click', function() {
-            infowindow[4].open(map, markers[4]);
-        });
-        markers[0].addListener('click', toggleBounce0);
-        markers[1].addListener('click', toggleBounce1);
-        markers[2].addListener('click', toggleBounce2);
-        markers[3].addListener('click', toggleBounce3);
-        markers[4].addListener('click', toggleBounce4);
+        google.maps.event.addListener(marker, 'click', (function(i) {
+    return function() {
+
+        toggleBounce(places[i].marker);  // add toggleBounce when marker is clicked
+        infowindow.setContent(places[i].contentString),
+        infowindow.open(map, places[i].marker)
+    }
+  })(i));
     });
 }, ViewModel);
 
 ko.applyBindings(ViewModel);
-
+}
 $(document).ready(function(){
     $("#hide").click(function(){
         $("#searcher").hide();
