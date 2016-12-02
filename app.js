@@ -1,9 +1,9 @@
 // This function is to load the google maps API asynchronously
 function loadScript() {
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp' +
-        '&signed_in=false&callback=initialize';
+    // var script = document.createElement('script');
+    // script.type = 'text/javascript';
+    // script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp' +
+    //     '&signed_in=false&callback=initialize';
     setTimeout(function() {
         try {
             if (!window.google || !window.google.maps) {
@@ -15,7 +15,7 @@ function loadScript() {
     }, 5000);
     document.body.appendChild(script);
 }
-window.onload = loadScript;
+// window.onload = loadScript;
 
 // This defines the object containing the different propties of the places
 var places = [{
@@ -24,7 +24,7 @@ var places = [{
     lng: 76.879843,
     streetAddress: "Near Cordial CC",
     cityAddress: "Thiruvananthapuram",
-    id: "p1",
+    idd: "p1",
     visible: true,
     boolTest: true,
     newsAgency:  "espn",   // new property added
@@ -35,7 +35,7 @@ var places = [{
     lng: 76.880744,
     streetAddress: "A bit far from Cordial CC",
     cityAddress: "Thiruvananthapuram",
-    id: "p2",
+    idd: "p2",
     visible: true,
     boolTest: true,
     newsAgency:  "entertainment-weekly",  // new property added
@@ -46,7 +46,7 @@ var places = [{
     lng: 76.876187,
     streetAddress: "Back gate of TechnoPark",
     cityAddress: "Thiruvananthapuram",
-    id: "p3",
+    idd: "p3",
     visible: true,
     boolTest: true,
     newsAgency: "der-tagesspiegel",
@@ -57,7 +57,7 @@ var places = [{
     lng: 76.879113,
     streetAddress: "Inside TechnoPark",
     cityAddress: "Thiruvananthapuram",
-    id: "p4",
+    idd: "p4",
     visible: true,
     boolTest: true,
     newsAgency: "daily-mail",
@@ -68,12 +68,13 @@ var places = [{
     lng: 76.880789,
     streetAddress: "Inside Leela Building",
     cityAddress: "Thiruvananthapuram",
-    id: "p5",
+    idd: "p5",
     visible: true,
     boolTest: true,
     newsAgency: "die-zeit",
     sortby: "latest"
 }];
+console.log(places);
 var j = 0; //variable for looping
 var infowindow;
 // var lists = document.getElementsByClassName("options");
@@ -111,7 +112,7 @@ function initialize() {
     });
 
   places.forEach(function(place) {
-
+    console.log(place);
   // create url for the agency
   var url = "https://newsapi.org/v1/articles?source=" + place.newsAgency +
     "&sortBy=" + place.sortby + "&apiKey=ddeb645e52134e719ed5dcb241db22d3";
@@ -137,6 +138,7 @@ function initialize() {
         j = j + 1;
 });
 
+var a = [];
     // The markers as well as the infowindows containing information about these locations is being added.
     for (var i = 0; i < places.length; i++) {
 
@@ -153,7 +155,9 @@ function initialize() {
   });
 
   places[i].marker = marker;
-
+  // a[i] = places[i].idd;
+  console.log(a);
+  console.log(places[i]);
   google.maps.event.addListener(marker, 'click', (function(i) {
     return function() {
         toggleBounce(places[i].marker);  // add toggleBounce when marker is clicked
@@ -161,7 +165,16 @@ function initialize() {
         infowindow.open(map, places[i].marker)
     }
   })(i));
+
+
+  // google.maps.event.addListener(place,'click',function(){
+  //       return function(){
+  //           infowindow.setContent(place.contentString),
+  //           infowindow.open(map, place.marker)
+  //       }
+  //   });
 }
+
 
 // Toggling feature of the marker when clicked
 function toggleBounce(marker) {
@@ -172,6 +185,14 @@ function toggleBounce(marker) {
     }
 }
 
+// a.forEach(function(place){
+//     google.maps.event.addListener(place,'click',function(){
+//         return function(){
+//             infowindow.setContent(place.contentString),
+//             infowindow.open(map, place.marker)
+//         }
+//     });
+// });
 
 var ViewModel = {
     // places: ko.observableArray(),
@@ -179,54 +200,19 @@ var ViewModel = {
 };
 
 var tempArr = [];
+
 ViewModel.places = ko.dependentObservable(function() {
-    var search = this.query().toLowerCase();
-    tempArr = [];
-    var marker = [];
-    lats = [];
-    lngs = [];
-    return ko.utils.arrayFilter(places, function(place) {
-        if (place.title.toLowerCase().indexOf(search) >= 0) {
-            tempArr.push(place.title.toLowerCase());
-            lats.push(place.lat);
-            // console.log(place.lat);
-            lngs.push(place.lng);
-            return place.title.toLowerCase().indexOf(search) >= 0;
-        }
-
-        console.log(tempArr);
-        places.forEach(function(place){
-            place.marker.setMap(null);
-        });
-        // To display the markers of the required/searched locations alone
-        for (var i = 0; i < tempArr.length; i++) {
-            for (var j = 0; j < places.length; j++) {
-                if (tempArr[i] === places[j].title.toLowerCase()) {
-                    myLatLng = {
-                        lat: places[j].lat,
-                        lng: places[j].lng
-                    };
-                    marker[j] = new google.maps.Marker({
-                        position: myLatLng,
-                        map: map,
-                        zoom: 16,
-                        animation: google.maps.Animation.DROP,
-                        title: string[j]
-                    });
-                    marker[j].setMap(map);
-                }
-            }
-        }
-        console.log(markers);
-        google.maps.event.addListener(marker, 'click', (function(i) {
-    return function() {
-
-        toggleBounce(places[i].marker);  // add toggleBounce when marker is clicked
-        infowindow.setContent(places[i].contentString),
-        infowindow.open(map, places[i].marker)
+  var search = this.query().toLowerCase();
+  return ko.utils.arrayFilter(places, function(place) {
+    console.log(place)
+    if (place.title.toLowerCase().indexOf(search) >= 0) {
+      place.marker.setVisible(true);
+      return place.title.toLowerCase().indexOf(search) >= 0;
+    } else {
+      place.marker.setVisible(false);
+      return false;
     }
-  })(i));
-    });
+  });
 }, ViewModel);
 
 ko.applyBindings(ViewModel);
@@ -242,6 +228,7 @@ $(document).ready(function(){
         $("#hide").show();
         $("#show").hide();
     });
+
 });
 // To display the weather using openweather API and getJSON method. Error Handling has also been provided in case incorrect data is entered
 // var url1 = "http://api.openweathermap.org/data/2.5/weather?lat=13&lon=8&appid=f5dfed972c4e75b54e8792be551813a0&units=metrics";
